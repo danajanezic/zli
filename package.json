@@ -1,15 +1,15 @@
 {
   "name": "zli",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Google ZX Based CLI framework",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "echo 'VeniceCLI dependencies installed, run `zx configure.js`'"
+    "postinstall": "echo 'VeniceCLI dependencies installed, run `npx zli configure.js`'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ['cli', 'zx'],
+  "author": "Venice Media Inc.",
+  "license": "MIT",
   "bin": {
     "zli": "./bin/index.js"
   },
@@ -29,8 +29,6 @@
     "npm": "8.1.2"
   },
   "dependencies": {
-    "@babel/core": "^7.21.8",
-    "@sendgrid/client": "^7.6.2",
     "cli-markdown": "^2.0.4",
     "commander": "^8.2.0",
     "deep-object-diff": "^1.1.7",
