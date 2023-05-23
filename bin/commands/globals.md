@@ -2,7 +2,7 @@
 The ZLI CLI interpreter provides the following sets of globals:
 - Those inherited from ZX
 - Common helper functions and context variables
-- Helpers namespaced to `vn` that are either less common, has a name that shouldn't pollute the global space, or both
+- Helpers namespaced to `_z` that are either less common, has a name that shouldn't pollute the global space, or both
 
 To see a list of these globals run this command with the additional `--show` option
 
@@ -32,7 +32,7 @@ export const OPTS = {
 }
 
 useOpts(({foo, bar}) => {
-  log({foo, bar});
+  echo({foo, bar});
 }, 'foo');
 ```
 The above example if run by a user as:
@@ -53,7 +53,7 @@ $ ./zli example --bar 'I DO NOT LIKE PIZZA'
 If the example hook were passed another value in args for 'bar' like:
 ```
 useOpts(({foo, bar}) => {
-  log({foo, bar});
+  echo({foo, bar});
 }, 'foo', 'bar');
 ```
 The callback code would only be executed when the user provides **both** the *foo* and
@@ -88,7 +88,7 @@ Under the hood they all use the hook `whenRuntime`. It is actually a curried hoo
 ```javascript
   const whenRuntime = (...runtimes) => {
     return (callback, onDefault) => {
-      const filtered = runtimes.filter(r => vn.RUNTIME_FLAGS.includes(r));
+      const filtered = runtimes.filter(r => _z.RUNTIME_FLAGS.includes(r));
       return filtered.length ? ifFunc(callback)(filtered) : ifFunc(onDefault)();
     };
   };

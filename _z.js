@@ -7,7 +7,7 @@ import * as optionsParser from './lib/parse-options.js';
 await (async function main() {
   registerGlobals();
   $.verbose = argv.verbose;
-  vn.program.configureOutput({
+  _z.program.configureOutput({
     writeOut: str => {
       console.log(chalk.green(str));
     },

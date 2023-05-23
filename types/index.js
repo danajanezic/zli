@@ -37,8 +37,4 @@ export const OPTION_TYPES = {
     ...base,
     inputType: INPUT_TYPES.variadicString,
   },
-  DOCUMENTATION: {
-    ...base,
-    inputType: INPUT_TYPES.boolean,
-  },
 };

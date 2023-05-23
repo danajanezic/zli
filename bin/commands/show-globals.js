@@ -18,12 +18,12 @@ export const OPTS = {
 useOpts(() => {
     const markdown = Object.keys(global).reduce(
         (a, key) => {
-            if (key === 'vn') {
+            if (key === '_z') {
                 return `
-- vn
-  ${Object.keys(global.vn).reduce((s, vKey) => {
+- _z
+  ${Object.keys(global._z).reduce((s, vKey) => {
                     return s.concat(`
-  - ${vKey} (${typeof global.vn[vKey]})`);
+  - ${vKey} (${typeof global._z[vKey]})`);
                 }, ``)}
 `;
             }

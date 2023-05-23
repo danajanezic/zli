@@ -1,8 +1,10 @@
 #! /usr/bin/env node
 import { createInterpreter, registerGlobals } from './lib/interpreter.js';
 import { parseOptsToString } from './lib/parse-options.js';
-import { $ } from 'zx';
+import{ $ } from 'zx';
 import { logo } from './logo.js';
+import stringify from 'code-stringify';
+import { PerformanceObserver, performance } from 'node:perf_hooks';
 
 const CONFIG = JSON.parse(process.env.CONFIG);
 
@@ -11,7 +13,7 @@ $.verbose = false;
 const { stdout: dirname } = await $`pwd`;
 const __dirname = dirname.trim();
 
-vn.program.configureOutput({
+_z.program.configureOutput({
   writeOut: str => {
     console.log(chalk.green(str));
   },
@@ -20,7 +22,7 @@ vn.program.configureOutput({
   },
 });
 
-vn.program.addHelpText('beforeAll', logo);
+_z.program.addHelpText('beforeAll', logo);
 
 const commandStrs = await globby([`${CONFIG.root}/**.js`, `${CONFIG.root}/**/*.js`, `!${CONFIG.root}/**/node_modules`]);
 
@@ -64,37 +66,53 @@ const populateSubcommands = (parentNode, paths, optsCode) => {
   };
 };
 
-const parsedOpts = commandStrs.reduce(
-  (a, c) => {
-    const parts = c.split('/').slice(2);
-    const script = vn.resolve(__dirname, c);
+const CACHE_FILE = `${__dirname}/.zli.cache.js`;
 
-    const opts = parseOptsToString(script);
-    const asCode = new Function(`const subs = ${opts}; return subs`)();
+async function getParsedOpts() {
+  if (fs.existsSync(CACHE_FILE) && process.argv[2] !== '--write-cache') {
+    const cache = await import(`${CACHE_FILE}`);
+    return cache.default;
+  } else {
+    return commandStrs.reduce(
+        (a, c) => {
+          const parts = c.split('/').slice(2);
+          const script = _z.resolve(__dirname, c);
 
-    if (!vn.hasValues(asCode)) {
-      return a;
-    }
+          const opts = parseOptsToString(script);
+          const asCode = new Function(`const subs = ${opts}; return subs`)();
 
-    return populateSubcommands(a, parts, asCode);
-  },
-  { subcommands: [] }
-);
+          if (!_z.hasValues(asCode)) {
+            return a;
+          }
+
+          return populateSubcommands(a, parts, asCode);
+        },
+        { subcommands: [] }
+    );
+  }
+}
 
 const showNames = (node, parentName = '') => {
-  if (node.name) console.log(parentName + ' > ' + node.name);
+  if (node.name) console.info(parentName + ' > ' + node.name);
   if (node.options)
-    console.log(
-      '---->',
-      node.options.map(o => [o.name[0], o.name])
+    console.info(
+        '---->',
+        node.options.map(o => [o.name[0], o.name])
     );
   if (node.subcommands) {
     node.subcommands.map(s => showNames(s, node.name));
   }
 };
 
+const parsedOpts = await getParsedOpts();
+
 if (process.argv[2] === '--show-arg-name-map') {
   showNames(parsedOpts);
+  process.exit(0);
+}
+
+if (process.argv[2] === '--write-cache') {
+  fs.writeFileSync(CACHE_FILE, `export default ${stringify(parsedOpts)};`, { flag: 'w' });
   process.exit(0);
 }
 
