@@ -44,6 +44,7 @@ $ npx zli --configure
 
 The documentation will assume that you used all the default configuration values.
 
+To see an example project that uses ZLI [go here](https://github.com/qandamedia/example-zli-project).
 
 From there you can do the following:
 ```
