@@ -1,5 +1,5 @@
 #! /usr/bin/env zx
-import doConfigure from '../zli/bin/configure.js';
+import doConfigure from '../@venicemusic/zli/bin/configure.js';
 
 const {configure} = argv;
 
