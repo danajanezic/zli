@@ -1,10 +1,10 @@
 {
   "name": "@venicemusic/zli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Google ZX Based CLI framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npx ava",
     "postinstall": "echo 'VeniceCLI dependencies installed, run `npx zli configure.js`'"
   },
   "keywords": [
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/qandamedia/zli#readme",
   "repository": {
     "type": "git",
-    "url":  "https://github.com/qandamedia/zli.git"
+    "url": "https://github.com/qandamedia/zli.git"
   },
   "bugs": {
     "url": "https://github.com/qandamedia/zli/issues",
@@ -33,6 +33,7 @@
     "zli": "./bin/index.js"
   },
   "devDependencies": {
+    "ava": "^5.2.0",
     "eslint": "^8.3.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-better-mutation": "^1.4.0",
