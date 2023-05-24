@@ -1,6 +1,6 @@
 {
   "name": "@venicemusic/zli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Google ZX Based CLI framework",
   "main": "index.js",
   "scripts": {
