@@ -24,7 +24,6 @@ _z.program.configureOutput({
 
 _z.program.addHelpText('beforeAll', logo);
 
-const commandStrs = await globby([`${CONFIG.root}/**.js`, `${CONFIG.root}/**/*.js`, `!${CONFIG.root}/**/node_modules`]);
 
 const populateSubcommands = (parentNode, paths, optsCode) => {
   const currentPath = paths[0];
@@ -73,19 +72,38 @@ async function getParsedOpts() {
     const cache = await import(`${CACHE_FILE}`);
     return cache.default;
   } else {
+    const commandStrs = await globby([`${CONFIG.root}/**.js`, `${CONFIG.root}/**/*.js`, `!${CONFIG.root}/**/node_modules`]);
+
     return commandStrs.reduce(
         (a, c) => {
-          const parts = c.split('/').slice(2);
+
+          const cmdStartIdx = CONFIG.root.endsWith('/') ? CONFIG.root.split('/').length - 1 : CONFIG.root.split('/').length;
+          const parts = c.split('/').slice(cmdStartIdx);
           const script = _z.resolve(__dirname, c);
 
           const opts = parseOptsToString(script);
-          const asCode = new Function(`const subs = ${opts}; return subs`)();
 
-          if (!_z.hasValues(asCode)) {
-            return a;
+          try {
+            const asCode = new Function(`const subs = ${opts}; return subs`)();
+
+            if (!_z.hasValues(asCode)) {
+              return a;
+            }
+            console.log({parts})
+            return populateSubcommands(a, parts, asCode);
+          } catch (e) {
+            const error = new Error(`Opts parsing failed on ${script} with error: 
+            ${e.message}`);
+
+            console.error(error);
+            console.error(`
+Opts that failed parsing:
+            
+${opts}
+            `);
+            process.exit(1);
           }
 
-          return populateSubcommands(a, parts, asCode);
         },
         { subcommands: [] }
     );

@@ -1,6 +1,6 @@
 export const OPTS = {
-    name: 'ZLI',
-    description: 'Zsh CLI',
+    name: global.commandExecutable,
+    description: 'Z-CLI',
     options: [
         {
             name: 'verbose',
