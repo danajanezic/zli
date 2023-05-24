@@ -27,6 +27,13 @@ automatic built-in help output. It also provides a suite of functional hooks for
 flags and a suite of helpers to handle common scripting functionality.
 
 ## Getting Started
+
+### From NPM
+
+```
+$ npm i @venicemusic/zli
+```
+
 ### From Repo Clone
 ```
 $ gh repo clone qandamedia/zli
