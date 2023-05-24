@@ -89,7 +89,6 @@ async function getParsedOpts() {
             if (!_z.hasValues(asCode)) {
               return a;
             }
-            console.log({parts})
             return populateSubcommands(a, parts, asCode);
           } catch (e) {
             const error = new Error(`Opts parsing failed on ${script} with error: 
