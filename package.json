@@ -1,5 +1,5 @@
 {
-  "name": "zli",
+  "name": "@venice-music/zli",
   "version": "1.0.0",
   "description": "A Google ZX Based CLI framework",
   "main": "index.js",
