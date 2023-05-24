@@ -276,7 +276,9 @@ ZLI > show-globals
 ----> [ [ 'd', 'docs' ], [ 'l', 'list' ] ]
 ```
 
-## Command Tree Caching
+## Experimental Features
+
+### Command Tree Caching
 If you're CLI grows to be many files you might find that caching the command tree
 will provide a performance lift. To do so you can run:
 
@@ -291,3 +293,7 @@ won't work on other computers.
 If you do this, remember to run the write command any time the cli commands change
 to update the cache, otherwise the CLI won't know about new commands that have
 been added since the cache was last updated.
+
+There is a known issue where multiline line backtick string literals are not serialized
+properly. This is an issue with the`code-stringify` package and is the reason why
+this feature is still experimental.

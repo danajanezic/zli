@@ -11,8 +11,24 @@
     "cli",
     "zx"
   ],
-  "author": "Venice Media Inc.",
+  "author": "Venice Media Inc. <team-eng@venicemusic.com> (https://www.venicemusic.co/)",
+  "contributors": [
+    {
+      "name": "Dana Janezic",
+      "email": "dana@venicemusic.co",
+      "url": "https://github.com/danajanezic"
+    }
+  ],
   "license": "MIT",
+  "homepage": "https://github.com/qandamedia/zli#readme",
+  "repository": {
+    "type": "git",
+    "url":  "https://github.com/qandamedia/zli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qandamedia/zli/issues",
+    "email": "team-eng+zli-bugs@venicemusic.co"
+  },
   "bin": {
     "zli": "./bin/index.js"
   },
