@@ -28,15 +28,15 @@ export default async function(){
             console.warn('Overwriting...');
             fs.rmSync(config.root, {recursive: true});
             fs.mkdirSync(config.root);
-            fs.copyFileSync(`./node_modules/zli/bin/commands/default-opts.js`, config.root + 'index.js');
-            fs.copyFileSync(`./node_modules/zli/bin/commands/show-globals.js`, config.root + 'show-globals.js');
-            fs.copyFileSync(`./node_modules/zli/bin/commands/globals.md`, config.root + 'globals.md');
+            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/default-opts.js`, config.root + 'index.js');
+            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/show-globals.js`, config.root + 'show-globals.js');
+            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/globals.md`, config.root + 'globals.md');
         }
     } else {
         fs.mkdirSync(config.root);
-        fs.copyFileSync(`./node_modules/zli/bin/commands/default-opts.js`, config.root + 'index.js');
-        fs.copyFileSync(`./node_modules/zli/bin/commands/show-globals.js`, config.root + 'show-globals.js');
-        fs.copyFileSync(`./node_modules/zli/bin/commands/globals.md`, config.root + 'globals.md');
+        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/default-opts.js`, config.root + 'index.js');
+        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/show-globals.js`, config.root + 'show-globals.js');
+        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/globals.md`, config.root + 'globals.md');
     }
 
     if (fs.existsSync(config.commandExecutable)) {
@@ -44,10 +44,10 @@ export default async function(){
         if (overwriteExec.toLocaleLowerCase().startsWith('y')) {
             console.warn('Overwriting...');
             fs.rmSync(config.commandExecutable);
-            fs.copyFileSync(`./node_modules/zli/bin/zli.sh`, config.commandExecutable);
+            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/zli.sh`, config.commandExecutable);
         }
     } else {
-        fs.copyFileSync(`./node_modules/zli/bin/zli.sh`, config.commandExecutable);
+        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/zli.sh`, config.commandExecutable);
     }
     fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 4));
 }

@@ -133,6 +133,6 @@ if (process.argv[2] === '--write-cache') {
   process.exit(0);
 }
 
-const interpreter = createInterpreter(__dirname + '/node_modules/zli/index.js', process.argv, parsedOpts);
+const interpreter = createInterpreter(__dirname + '/node_modules/@venicemusic/zli/index.js', process.argv, parsedOpts);
 interpreter.preprocess();
 await interpreter.execute();
