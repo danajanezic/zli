@@ -11,11 +11,11 @@
     "cli",
     "zx"
   ],
-  "author": "Venice Media Inc. <team-eng@venicemusic.com> (https://www.venicemusic.co/)",
+  "author": "Dana Janezic <danajanezic@gmail.com> (https://github.com/danajanezic/zli)",
   "contributors": [
     {
       "name": "Dana Janezic",
-      "email": "dana@venicemusic.co",
+      "email": "danajanezic@gmail.com",
       "url": "https://github.com/danajanezic"
     }
   ],
@@ -44,10 +44,6 @@
     "prettier": "2.8.8"
   },
   "type": "module",
-  "engines": {
-    "node": "16.13.1",
-    "npm": "8.1.2"
-  },
   "dependencies": {
     "cli-markdown": "^2.0.4",
     "code-stringify": "^2.0.3",
