@@ -36,7 +36,7 @@ $ npm i @venicemusic/zli
 
 ### From Repo Clone
 ```
-$ gh repo clone qandamedia/zli
+$ gh repo clone danajanezic/zli
 
 $ cd <your project name>
 

@@ -45,7 +45,7 @@
   },
   "type": "module",
   "dependencies": {
-    "cli-markdown": "^2.0.4",
+    "assign-deep": "^1.0.1",
     "code-stringify": "^2.0.3",
     "commander": "^8.2.0",
     "deep-object-diff": "^1.1.7",
@@ -56,5 +56,8 @@
     "meriyah": "^4.3.0",
     "semver": "^7.3.8",
     "zx": "^7.0.1"
+  },
+  "engines": {
+    "node": ">=19.9.0"
   }
 }

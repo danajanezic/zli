@@ -1,12 +1,14 @@
 #! /usr/bin/env node
 import { createInterpreter, registerGlobals } from './lib/interpreter.js';
 import { parseOptsToString } from './lib/parse-options.js';
+import os from 'os';
 import{ $ } from 'zx';
 import { logo } from './logo.js';
-import stringify from 'code-stringify';
-import { PerformanceObserver, performance } from 'node:perf_hooks';
 
 const CONFIG = JSON.parse(process.env.CONFIG);
+// EXPAND HOME DIRECTORIES IN UNIX-BASED SYSTEMS
+CONFIG.root = CONFIG.root.startsWith('~') ? `${os.homedir()}${CONFIG.root.slice(1)}` : CONFIG.root;
+const CMD_ROOT = CONFIG.root + 'commands';
 
 registerGlobals(CONFIG);
 $.verbose = false;
@@ -28,7 +30,6 @@ _z.program.addHelpText('beforeAll', logo);
 const populateSubcommands = (parentNode, paths, optsCode) => {
   const currentPath = paths[0];
   const nextPath = paths.slice(1);
-
   const nodeName = currentPath.endsWith('.js') ? optsCode.name : currentPath;
 
   const currentNode = parentNode.subcommands.find(n => n.name === nodeName) || {
@@ -65,48 +66,42 @@ const populateSubcommands = (parentNode, paths, optsCode) => {
   };
 };
 
-const CACHE_FILE = `${__dirname}/.zli.cache.js`;
-
 async function getParsedOpts() {
-  if (fs.existsSync(CACHE_FILE) && process.argv[2] !== '--write-cache') {
-    const cache = await import(`${CACHE_FILE}`);
-    return cache.default;
-  } else {
-    const commandStrs = await globby([`${CONFIG.root}/**.js`, `${CONFIG.root}/**/*.js`, `!${CONFIG.root}/**/node_modules`]);
 
-    return commandStrs.reduce(
-        (a, c) => {
+  const commandStrs = await globby([`${CMD_ROOT}/**.js`, `${CMD_ROOT}/**/*.js`, `!${CMD_ROOT}/**/node_modules`]);
 
-          const cmdStartIdx = CONFIG.root.endsWith('/') ? CONFIG.root.split('/').length - 1 : CONFIG.root.split('/').length;
-          const parts = c.split('/').slice(cmdStartIdx);
-          const script = _z.resolve(__dirname, c);
+  return commandStrs.reduce(
+      (subcommandArray, c) => {
 
-          const opts = parseOptsToString(script);
+        const cmdStartIdx = CMD_ROOT.endsWith('/') ? CMD_ROOT.split('/').length - 1 : CMD_ROOT.split('/').length;
+        const parts = c.split('/').slice(cmdStartIdx);
+        const script = _z.resolve(__dirname, c);
 
-          try {
-            const asCode = new Function(`const subs = ${opts}; return subs`)();
+        const opts = parseOptsToString(script);
 
-            if (!_z.hasValues(asCode)) {
-              return a;
-            }
-            return populateSubcommands(a, parts, asCode);
-          } catch (e) {
-            const error = new Error(`Opts parsing failed on ${script} with error: 
-            ${e.message}`);
+        try {
+          const asCode = new Function(`const subs = ${opts}; return subs`)();
 
-            console.error(error);
-            console.error(`
-Opts that failed parsing:
-            
-${opts}
-            `);
-            process.exit(1);
+          if (!_z.hasValues(asCode)) {
+            return subcommandArray;
           }
+          return populateSubcommands(subcommandArray, parts, asCode);
+        } catch (e) {
+          const error = new Error(`Opts parsing failed on ${script} with error: 
+          ${e.message}`);
 
-        },
-        { subcommands: [] }
-    );
-  }
+          console.error(error);
+          console.error(`
+Opts that failed parsing:
+          
+${opts}
+          `);
+          process.exit(1);
+        }
+
+      },
+      { subcommands: [] }
+  );
 }
 
 const showNames = (node, parentName = '') => {
@@ -128,11 +123,6 @@ if (process.argv[2] === '--show-arg-name-map') {
   process.exit(0);
 }
 
-if (process.argv[2] === '--write-cache') {
-  fs.writeFileSync(CACHE_FILE, `export default ${stringify(parsedOpts)};`, { flag: 'w' });
-  process.exit(0);
-}
-
-const interpreter = createInterpreter(__dirname + '/node_modules/@venicemusic/zli/index.js', process.argv, parsedOpts);
+const interpreter = createInterpreter(CONFIG.root + '/node_modules/@venicemusic/zli/index.js', process.argv, parsedOpts);
 interpreter.preprocess();
 await interpreter.execute();

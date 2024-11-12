@@ -13,7 +13,8 @@ export default async function(){
     }
 
     const config = {}
-    config.root = await question(`Root path for ZLI? (default: ./zli-commands/)`) || './zli-commands/';
+    const commandRoot = await question(`Root path for ZLI? (default: zli-commands)`) || 'zli-commands';
+    config.root = `${__dirname}/${commandRoot}/`;
     config.commandExecutable = await question(`Name of executable to run ZLI? (default: zli)`) || 'zli';
     const proceed = await question(`Proceed with config: ${JSON.stringify(config,null,4)}? (y/N)`) || 'N';
 
@@ -28,15 +29,15 @@ export default async function(){
             console.warn('Overwriting...');
             fs.rmSync(config.root, {recursive: true});
             fs.mkdirSync(config.root);
-            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/default-opts.js`, config.root + 'index.js');
-            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/show-globals.js`, config.root + 'show-globals.js');
-            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/globals.md`, config.root + 'globals.md');
+            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/default-opts.js`, config.root + '/index.js');
+            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/show-globals.js`, config.root + '/show-globals.js');
+            fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/globals.md`, config.root + '/globals.md');
         }
     } else {
         fs.mkdirSync(config.root);
-        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/default-opts.js`, config.root + 'index.js');
-        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/show-globals.js`, config.root + 'show-globals.js');
-        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/globals.md`, config.root + 'globals.md');
+        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/default-opts.js`, config.root + '/index.js');
+        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/show-globals.js`, config.root + '/show-globals.js');
+        fs.copyFileSync(`./node_modules/@venicemusic/zli/bin/commands/globals.md`, config.root + '/globals.md');
     }
 
     if (fs.existsSync(config.commandExecutable)) {
@@ -51,5 +52,3 @@ export default async function(){
     }
     fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 4));
 }
-
-
