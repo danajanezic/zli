@@ -1,5 +1,7 @@
 # Globals
+
 The ZLI CLI interpreter provides the following sets of globals:
+
 - Those inherited from ZX
 - Common helper functions and context variables
 - Helpers namespaced to `_z` that are either less common, has a name that shouldn't pollute the global space, or both
@@ -7,57 +9,69 @@ The ZLI CLI interpreter provides the following sets of globals:
 To see a list of these globals run this command with the additional `--show` option
 
 ## Hooks
+
 There are two kinds of hooks: _Option Hooks_ and _Runtime Hooks_.
 
-__Option Hooks__ provide you with a function to wrap your code with so it will
+**Option Hooks** provide you with a function to wrap your code with so it will
 only be called when specified options have been passed.
+
 ```javascript
 useOpts(<callback>, ...[option names]);
 ```
+
 example:
+
 ```javascript
 export const OPTS = {
   name: 'example',
   description: 'an example subcommand',
-  options: [{
-    name: 'foo',
-    description: 'do foo-ish stuff',
-    type: OPTION_TYPES.BOOLEAN,
-  },
-  {
-    name: 'bar',
-    description: 'set value for bar',
-    type: OPTION_TYPES.INPUT,
-  }]
-}
+  options: [
+    {
+      name: 'foo',
+      description: 'do foo-ish stuff',
+      type: OPTION_TYPES.BOOLEAN,
+    },
+    {
+      name: 'bar',
+      description: 'set value for bar',
+      type: OPTION_TYPES.INPUT,
+    },
+  ],
+};
 
-useOpts(({foo, bar}) => {
-  echo({foo, bar});
+useOpts(({ foo, bar }) => {
+  echo({ foo, bar });
 }, 'foo');
 ```
+
 The above example if run by a user as:
+
 ```
 $ ./zli example --foo --bar 'I LIKE PIZZA!'
 ```
 
 Should output:
+
 ```
 > { foo: true, bar: 'I LIKE PIZZA!' }
 ```
 
 But the following invocation will not output anything:
+
 ```
 $ ./zli example --bar 'I DO NOT LIKE PIZZA'
 ```
 
 If the example hook were passed another value in args for 'bar' like:
+
 ```
 useOpts(({foo, bar}) => {
   echo({foo, bar});
 }, 'foo', 'bar');
 ```
-The callback code would only be executed when the user provides **both** the *foo* and
-*bar* options.
+
+The callback code would only be executed when the user provides **both** the _foo_ and
+_bar_ options.
 
 To specify a callback to call when _no options_ are provided simply pass `false` as the second argument.
 
@@ -70,33 +84,36 @@ $ ./zli --local|develop|staging|prod <subcommand> <options>
 ```
 
 This flowing list of _Runtime Hooks_ should be fairly self explanatory:
+
 ```javascript
-whenLocal(callback)
+whenLocal(callback);
 
-whenDevelop(callback)
+whenDevelop(callback);
 
-whenStaging(callback)
+whenStaging(callback);
 
-whenProduction(callback)
+whenProduction(callback);
 
-whenNonLocal(callback)
+whenNonLocal(callback);
 
-whenPreProd(callback)
+whenPreProd(callback);
 ```
 
 Under the hood they all use the hook `whenRuntime`. It is actually a curried hook so we can bind different combinations of runtimes to the functions above:
-```javascript
-  const whenRuntime = (...runtimes) => {
-    return (callback, onDefault) => {
-      const filtered = runtimes.filter(r => _z.RUNTIME_FLAGS.includes(r));
-      return filtered.length ? ifFunc(callback)(filtered) : ifFunc(onDefault)();
-    };
-  };
 
-  whenNonLocal = whenRuntime(RUNTIMES.DEVELOP, RUNTIMES.STAGING, RUNTIMES.PRODUCTION)
+```javascript
+const whenRuntime = (...runtimes) => {
+  return (callback, onDefault) => {
+    const filtered = runtimes.filter((r) => _z.RUNTIME_FLAGS.includes(r));
+    return filtered.length ? ifFunc(callback)(filtered) : ifFunc(onDefault)();
+  };
+};
+
+whenNonLocal = whenRuntime(RUNTIMES.DEVELOP, RUNTIMES.STAGING, RUNTIMES.PRODUCTION);
 ```
 
-__If your command requires the user to specify a runtime hook__ you can specify in this in your OPTS:
+**If your command requires the user to specify a runtime hook** you can specify in this in your OPTS:
+
 ```javascript
 export const OPTS = {
   name: 'example',
@@ -104,17 +121,21 @@ export const OPTS = {
   requiresRunTime: {
     default: RUNTIMES.LOCAL,
   },
-  options: [{
-    name: 'foo',
-    description: 'do foo-ish stuff',
-    type: OPTION_TYPES.BOOLEAN,
-  }]
-}
+  options: [
+    {
+      name: 'foo',
+      description: 'do foo-ish stuff',
+      type: OPTION_TYPES.BOOLEAN,
+    },
+  ],
+};
 ```
+
 The above example shows how to specify a default runtime value. If no default is provided and the user does not provide
 a runtime flag the user will be notified with an error.
 
 ## Important Globals
+
 ### ARGS (object)
 
 This variable is populated by the interpreter with the command line args that were parsed in the option parsing phase of execution. It is
@@ -122,4 +143,5 @@ very much preferred to use the hooks rather than modifying the flow of control o
 script by testing this value, but it is here should you need it.
 
 ### CMD (object)
+
 Set by the interpreter during the option parsing phase, provides the actual CommanderJS command object for use by child scripts

@@ -1,8 +1,8 @@
 #! /usr/bin/env zx
 import doConfigure from '../@venicemusic/zli/bin/configure.js';
 
-const {configure} = argv;
+const { configure } = argv;
 
 if (configure) {
-    await doConfigure();
+  await doConfigure();
 }

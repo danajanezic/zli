@@ -6,8 +6,8 @@ const base = {
 };
 
 export const INPUT_TYPES = {
-  variadicString: name => ({ extra: `<${name}...>` }),
-  scalar: name => ({ extra: `<${name}>` }),
+  variadicString: (name) => ({ extra: `<${name}...>` }),
+  scalar: (name) => ({ extra: `<${name}>` }),
   password: { extra: '[password]' },
   boolean: { extra: '' },
 };

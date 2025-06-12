@@ -8,22 +8,24 @@ await (async function main() {
   registerGlobals();
   $.verbose = argv.verbose;
   _z.program.configureOutput({
-    writeOut: str => {
+    writeOut: (str) => {
       console.log(chalk.green(str));
     },
-    writeErr: str => {
+    writeErr: (str) => {
       console.error(chalk.red(`${str}`));
     },
   });
 
-  const extensions = fs.existsSync(global.root + '/opts-extensions.js') ? await import(global.root + '/opts-extensions.js') : {};
+  const extensions = fs.existsSync(global.root + '/opts-extensions.js')
+    ? await import(global.root + '/opts-extensions.js')
+    : {};
 
   try {
     const scriptName = argv._[0];
     const defaultOptions = optionsParser.parseAndEvaluateOptions('./cli/commands/index.js');
     const interpreter = createInterpreter(scriptName, process.argv.slice(1), {
       ...defaultOptions,
-        ...extensions,
+      ...extensions,
     });
     interpreter.preprocess();
     await interpreter.execute();
