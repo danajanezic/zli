@@ -43,6 +43,14 @@ $ cd <your project name>
 $ npm i <location  you cloned zli to>
 ```
 
+### Quick Install with Installer
+If you prefer a single command setup you can run the provided installer script.
+From your project root execute:
+```
+$ node <location you cloned zli to>/install.js
+```
+This will install all dependencies and start the configuration process.
+
 
 Once installed you have to configure it:
 ```
