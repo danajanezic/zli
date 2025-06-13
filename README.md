@@ -35,7 +35,7 @@ flags and a suite of helpers to handle common scripting functionality.
 ### From NPM
 
 ```
-$ npm i @venicemusic/zli
+$ npm i zli
 ```
 
 ### From Repo Clone

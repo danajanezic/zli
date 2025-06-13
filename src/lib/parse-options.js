@@ -2,16 +2,32 @@
 import escodegen from 'escodegen';
 import { parseAndTraverse } from './ast-parsing.js';
 
+/**
+ * Checks if a file path refers to a Node.js module.
+ * @param {string} filePath - The file path to check.
+ * @returns {boolean} True if the path is a Node.js module, false otherwise.
+ */
 export const isNodeModule = (filePath) => {
   const match = filePath.match(/$\.|\//);
   return match === null;
 };
 
+/**
+ * Creates an ESTree ObjectExpression node.
+ * @param {object[]} [properties=[]] - Properties to include in the object expression.
+ * @returns {object} ESTree ObjectExpression node.
+ */
 const OBJECT_EXPRESSION = (properties = []) => ({
   type: 'ObjectExpression',
   properties,
 });
 
+/**
+ * Creates an ESTree Property node.
+ * @param {string} name - Property name.
+ * @param {object} value - Property value node.
+ * @returns {object} ESTree Property node.
+ */
 const createProperty = (name, value) => {
   return {
     type: 'Property',
@@ -27,6 +43,11 @@ const createProperty = (name, value) => {
   };
 };
 
+/**
+ * Creates an ESTree ArrayExpression node.
+ * @param {object[]} elements - Elements of the array expression.
+ * @returns {object} ESTree ArrayExpression node.
+ */
 const createArrayExpression = (elements) => {
   return {
     type: 'ArrayExpression',
@@ -35,6 +56,11 @@ const createArrayExpression = (elements) => {
 };
 
 // IN PROGRESS
+/**
+ * Visitor for handling import declarations in AST parsing.
+ * @param {object} path - Babel path object for the import declaration.
+ * @param {object} state - State object for the parser.
+ */
 export const ImportDeclaration = (path, state) => {
   const { filePath } = state;
 
@@ -59,6 +85,11 @@ export const ImportDeclaration = (path, state) => {
   }
 };
 
+/**
+ * Visitor for handling export named declarations related to OPTS in AST parsing.
+ * @param {object} path - Babel path object for the export declaration.
+ * @param {object} state - State object for the parser.
+ */
 const OptsExportNamedDeclarationVisitor = (path, state) => {
   const hasOpts = path.scope.hasBinding('OPTS');
   const declarations = path.get('declaration').get('declarations');
@@ -78,6 +109,11 @@ const OptsExportNamedDeclarationVisitor = (path, state) => {
   }
 };
 
+/**
+ * Visitor for handling export named declarations related to DEPS in AST parsing.
+ * @param {object} path - Babel path object for the export declaration.
+ * @param {object} state - State object for the parser.
+ */
 const DepsExportNamedDeclarationVisitor = (path, state) => {
   const hasDeps = path.scope.hasBinding('DEPS');
   const declarations = path.get('declaration').get('declarations');
@@ -90,6 +126,12 @@ const DepsExportNamedDeclarationVisitor = (path, state) => {
   }
 };
 
+/**
+ * Parses options from a file and returns an ESTree object representing commands.
+ * @param {string} filePath - Path to the file to parse.
+ * @param {object} [commands=OBJECT_EXPRESSION()] - Initial commands object.
+ * @returns {object} The parsed commands object.
+ */
 export const parseOptions = (filePath, commands = OBJECT_EXPRESSION()) => {
   const state = {
     filePath,
@@ -110,6 +152,11 @@ export const parseOptions = (filePath, commands = OBJECT_EXPRESSION()) => {
   }
 };
 
+/**
+ * Parses dependencies from a file and returns an array of dependency names.
+ * @param {string} filePath - Path to the file to parse.
+ * @returns {string[]|boolean} Array of dependency names, or false if not found.
+ */
 export const parseDeps = (filePath) => {
   const state = {
     deps: false,
@@ -129,11 +176,21 @@ export const parseDeps = (filePath) => {
   }
 };
 
+/**
+ * Parses options from a file and returns them as a string of code.
+ * @param {string} filePath - Path to the file to parse.
+ * @returns {string} The generated code string for options.
+ */
 export const parseOptsToString = (filePath) => {
   const commands = parseOptions(filePath);
   return escodegen.generate(commands);
 };
 
+/**
+ * Parses and evaluates options from a file, returning the resulting object.
+ * @param {string} filePath - Path to the file to parse.
+ * @returns {object} The evaluated options object.
+ */
 export const parseAndEvaluateOptions = (filePath) => {
   const commands = parseOptions(filePath);
   const optsGen = escodegen.generate(commands);

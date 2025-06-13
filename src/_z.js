@@ -4,6 +4,10 @@ import { registerGlobals, createInterpreter } from './lib/interpreter.js';
 import { $, ProcessOutput } from 'zx';
 import * as optionsParser from './lib/parse-options.js';
 
+/**
+ * CLI entry point for ZLI. Registers globals, configures output, loads extensions, and runs the interpreter.
+ * Handles ProcessOutput errors gracefully.
+ */
 await (async function main() {
   registerGlobals();
   $.verbose = argv.verbose;

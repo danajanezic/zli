@@ -1,7 +1,7 @@
-#! /usr/bin/env zx
-import doConfigure from '../@venicemusic/zli/bin/configure.js';
+#! /usr/bin/env node
+import doConfigure from './configure.js';
 
-const { configure } = argv;
+const configure = process.argv.includes('--configure');
 
 if (configure) {
   await doConfigure();

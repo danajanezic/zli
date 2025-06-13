@@ -1,5 +1,12 @@
 import { createOptionString } from './naming.js';
 
+/**
+ * Recursively registers subcommands for a CLI program.
+ * @param {object} subcmd - The commander.js subcommand object.
+ * @param {object} param1 - Object containing subcommands array.
+ * @param {Function} action - Action handler for commands.
+ * @param {object} program - The main commander.js program object.
+ */
 export const registerSubcommandsRecursively = (subcmd, { subcommands = [] }, action, program) => {
   subcommands.forEach((c) => {
     if (!_z.hasValues(c)) {
@@ -61,6 +68,12 @@ export const registerSubcommandsRecursively = (subcmd, { subcommands = [] }, act
   });
 };
 
+/**
+ * Registers a command and its options with the CLI program.
+ * @param {object} program - The commander.js program object.
+ * @param {object} OPTS - Options object for the command.
+ * @param {Function} action - Action handler for the command.
+ */
 export const registerCommand = (program, OPTS, action) => {
   const { name, alias, description } = OPTS;
   const p = program.name(name).description(description);
