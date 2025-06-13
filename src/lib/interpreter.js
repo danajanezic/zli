@@ -46,8 +46,19 @@ const less = async (string) => {
   });
 };
 
+/**
+ * Checks if the provided object is a function.
+ * @param {*} obj - The object to check.
+ * @returns {boolean} True if obj is a function, false otherwise.
+ */
 const isFunc = (obj) => typeof obj === 'function';
 
+/**
+ * Executes a callback with a ZLI command context for a given command path.
+ * @param {Function} callback - The function to execute with the command.
+ * @param {...string} commandPath - The path segments for the command.
+ * @returns {Promise<*>} The result of the callback.
+ */
 const withZliCmd = async (callback, ...commandPath) => {
   await within(async () => {
     const filePath = commandPath[commandPath.length - 1].includes('.js')
@@ -59,6 +70,10 @@ const withZliCmd = async (callback, ...commandPath) => {
   });
 };
 
+/**
+ * Registers global variables and utilities for the ZLI environment.
+ * @param {Object} config - Optional configuration object to merge into globals.
+ */
 export function registerGlobals(config = {}) {
   Object.assign(global, {
     ...config,
@@ -102,6 +117,13 @@ export function registerGlobals(config = {}) {
   });
 }
 
+/**
+ * Dynamically imports and executes a script at the given filepath with provided arguments and command context.
+ * @param {string} filepath - The path to the script file.
+ * @param {Object} args - Arguments to pass to the script.
+ * @param {Object} command - Commander command context.
+ * @returns {Promise<void>} Resolves when the script is executed.
+ */
 async function importPath(filepath, args, command) {
   if (!filepath) {
     program.help();
@@ -133,7 +155,12 @@ async function importPath(filepath, args, command) {
     }
   };
 
-  const whenRuntime = (...runtimes) => {
+  /**
+ * Creates a function that executes a callback if the current runtime matches any of the provided runtimes.
+ * @param {...string} runtimes - Runtime environment names to match.
+ * @returns {Function} A function accepting a callback and an optional default handler.
+ */
+const whenRuntime = (...runtimes) => {
     return (callback, onDefault) => {
       const filtered = runtimes.filter((r) => _z.RUNTIME_FLAGS.includes(r));
       return filtered.length ? ifFunc(callback)(filtered) : ifFunc(onDefault)();
@@ -159,6 +186,11 @@ async function importPath(filepath, args, command) {
   await import(url.pathToFileURL(filepath));
 }
 
+/**
+ * Returns a commander action handler for the CLI, handling option parsing and command execution.
+ * @param {Object} OPTS - Options object for the command.
+ * @returns {Function} Function that receives a filepath and returns an async action handler.
+ */
 const defaultCommanderAction = (OPTS) => (filepath) => {
   return async (args, command) => {
     if (
@@ -231,6 +263,13 @@ const defaultCommanderAction = (OPTS) => (filepath) => {
 
 global.OPTS = {};
 
+/**
+ * Creates an interpreter for running ZLI scripts.
+ * @param {string} scriptPath - Path to the script to execute.
+ * @param {string[]} argv - Arguments array (defaults to process.argv).
+ * @param {Object} coreOpts - Core options to merge with parsed options.
+ * @returns {Object} Interpreter with preprocess and execute methods.
+ */
 export function createInterpreter(scriptPath, argv, coreOpts) {
   const rawArgs = argv || process.argv;
   const firstArg = scriptPath || rawArgs.slice(2).find((a) => !a.startsWith('--'));

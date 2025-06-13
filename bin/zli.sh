@@ -4,7 +4,7 @@ export USER_SHELL=`finger $USER | grep Shell | cut -d ':' -f3 | xargs`
 export CONFIG=`cat .zli.json`
 
 if [[ -z ${PROFILE+x} ]]; then
-  ./node_modules/@venicemusic/zli/index.js "$@"
+  ./node_modules/zli/src/index.js "$@"
 else
   node --prof ./index.js "$@" &&
   if [[ $PROFILE == 1 ]]; then

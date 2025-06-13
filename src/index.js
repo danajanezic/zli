@@ -26,6 +26,13 @@ _z.program.configureOutput({
 
 _z.program.addHelpText('beforeAll', logo);
 
+/**
+ * Populates the subcommands tree recursively from command paths and options code.
+ * @param {object} parentNode - Parent node to attach subcommands to.
+ * @param {string[]} paths - Path segments to traverse.
+ * @param {object} optsCode - Options code for the current command.
+ * @returns {object} The updated parentNode with subcommands populated.
+ */
 const populateSubcommands = (parentNode, paths, optsCode) => {
   const currentPath = paths[0];
   const nextPath = paths.slice(1);
@@ -65,6 +72,10 @@ const populateSubcommands = (parentNode, paths, optsCode) => {
   };
 };
 
+/**
+ * Gathers and parses all command option files into a structured subcommands tree.
+ * @returns {Promise<object>} The parsed subcommands structure.
+ */
 async function getParsedOpts() {
   const commandStrs = await globby([
     `${CMD_ROOT}/**.js`,
@@ -106,6 +117,11 @@ ${opts}
   );
 }
 
+/**
+ * Recursively prints the names of commands and their options for debugging.
+ * @param {object} node - The command or subcommand node.
+ * @param {string} [parentName=''] - The parent command name for nesting.
+ */
 const showNames = (node, parentName = '') => {
   if (node.name) console.info(parentName + ' > ' + node.name);
   if (node.options)
@@ -126,9 +142,10 @@ if (process.argv[2] === '--show-arg-name-map') {
 }
 
 const interpreter = createInterpreter(
-  CONFIG.root + '/node_modules/@venicemusic/zli/index.js',
+  CONFIG.root + '/index.js',
   process.argv,
   parsedOpts
 );
+
 interpreter.preprocess();
 await interpreter.execute();
